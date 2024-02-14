@@ -1,0 +1,17 @@
+version: 3.8
+
+services:
+  mariadb:
+    networks:
+      - inception
+
+  nginx:
+    networks:
+      - inception
+
+  wordpress:
+    networks:
+      - inception
+
+networks:
+  inception
