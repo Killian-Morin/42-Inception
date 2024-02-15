@@ -1,8 +1,10 @@
 FROM debian:bullseye
 
-RUN apt update && \
-	apt install nginx -y && \
-	apt install vim -y && \
+#apt update -y && \
+#apt upgrade -y && \
+#apt install vim -y && \
+
+RUN	apt install nginx -y && \
 	apt install curl -y && \
 	mkdir -p /etc/nginx/ssl && \
 	apt install openssl -y && \
@@ -12,5 +14,7 @@ RUN apt update && \
 	chown -R www-data:www-data /var/www/html
 
 COPY conf/nginx.conf /etc/nginx/nginx.conf
+
+EXPOSE 443
 
 CMD ["nginx", "-g", "daemon off;"]
