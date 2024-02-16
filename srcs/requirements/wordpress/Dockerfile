@@ -1,9 +1,5 @@
 FROM debian:bullseye
 
-#apt update -y && \
-#apt upgrade -y && \
-#apt install vim -y && \
-
 RUN apt install wget -y && \
 	apt install php8.0 -y && \
 	apt install php8.0-fpm -y && \
