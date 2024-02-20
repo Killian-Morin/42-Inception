@@ -1,16 +1,43 @@
-!/bin/bash
+#!/bin/bash
 
-#sleep 10
+@echo "<============> WordPress SCRIPT <============>"
 
-#if script.sh existe pas
-#wp config create
+php-fpm.8.0 -v
 
-#wp config create --allow-root \
-				 --dbname=$SQL_DATABASE \
-				 --dbuser=$SQL_USER \
-				 --dbpass=$SQL_PASSWORD \
-				 --dbhost=mariadb:3306 \
-				 --path='/var/www/wordpress'
+# Boucle verification mariadb qui attend que mariadb soit up
+while ! mariadb -u $MARIADB_USER --password=$MARIADB_PASS -h mariadb -P 3306 --silent; do
+	sleep 1
+	echo "Mariadb n'est pas encore pret"
+done
 
-#wp core install > create the first user and set ≠ things for the site
-#wp user create > create the second user
+# Affichage dans le terminal des bases de donnees
+echo "------------------\n"
+mariadb -u $MARIADB_USER --password=$MARIADB_PASS -h mariadb -P 3306 -e "SHOW DATABASES;"
+echo "------------------\n"
+
+
+# Installation de Wordpress si necessaire
+if [ -e /var/www/wordpress/wp-config.php ]
+then echo "wp-config existe."
+else
+
+	# Installation de wp-cli
+	wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+	chmod +x wp-cli.phar
+	mv wp-cli.phar /usr/local/bin/wp
+
+	# Installation de wordpress
+	cd /var/www/wordpress
+	wp core download --allow-root
+
+	# Configuration de wordpress : connection a la base de donnees et creation des users de wordpress (admin et user supplémentaire)
+	wp config create --dbname=$MARIADB_DATABASE_NAME --dbuser=$MARIADB_USER --dbpass=$MARIADB_PASS --dbhost=$WP_HOST --dbcharset="utf8" --dbcollate="utf8_general_ci" --allow-root
+	# creation de l'user et set ≠ choses pour le site
+	wp core install --url=$DOMAIN_NAME --title=$WP_NAME --admin_user=$WP_ADMIN --admin_password=$WP_ADMIN_PASS --admin_email=$WP_ADMIN_EMAIL --skip-email --allow-root
+	# creation du second user
+	wp user create $WP_USER $WP_USER_EMAIL --role=author --user_pass=$WP_USER_PASS --allow-root
+
+fi
+
+# Lancement de php-fpm
+php-fpm8.0 -F

@@ -5,68 +5,65 @@ services:
     container_name: mariadb
     networks:
       - inception
-    expose:
-      - "3306"
     build:
-      context: requirements/mariadb
-      dockerfile: Dockerfile
-    # build: ./requirements/mariadb/.
+      context: requirements/mariadb # Localisation du Dockerfile
+      dockerfile: Dockerfile        # Nom du Dockerfile
     env_file: .env
-    # restart:
     volumes:
-      - mariadb:/var/lib/mysql
+      - mariadbV:/var/lib/mysql # le volume mariadbV est mounted sur le chemin /var/lib/mysql pour la DB
+    # restart:
+    # expose:
+    #   - "3306"
 
   nginx:
     container_name: nginx
     networks:
       - inception
-    ports:
-      - "443:443"
+    ports: # ouverture du port vers l'exterieur du network
+      - "443:443" # rend accessible le container depuis l'exterieur HOST_PORT:CONTAINER_PORT
     depends_on:
       - wordpress
     build:
       context: requirements/nginx
       dockerfile: Dockerfile
-    # build: ./requirements/nginx/.
     env_file: .env
-    # restart:
     volumes:
-      - wordpress:/var/www/wordpress
-      #- wordpress:/var/www/html
+      - wordpressV:/var/www/wordpress # le volume wordpressV est mounted sur le chemin /var/www/wordpress pour NGINX
+    # restart:
 
   wordpress:
     container_name: wordpress
     networks:
       - inception
-    expose:
-      - "9000"
     depends_on:
       - mariadb
     build:
       context: requirements/wordpress
       dockerfile: Dockerfile
-    # build: ./requirements/wordpress/.
     env_file: .env
-    # restart:
     volumes:
-      - wordpress:/var/www/wordpress
-      #- wordpress:/var/www/html
+      - wordpressV:/var/www/wordpress # le volume wordpressV est mounted sur le chemin /var/www/wordpress pour NGINX
+    # restart:
+    # expose:
+    #   - "9000"
 
 volumes:
-  mariadb:
+  mariadbV:
+    name: mariadbV
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /Users/kmorin/data/mariadb
-  wordpress:
+      device: /home/kmorin/data/mariadb # Emplacement du dossier lie sur la machine hote
+  wordpressV:
+    name: wordpressV
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /Users/kmorin/data/wordpress
+      device: /home/kmorin/data/wordpress # Emplacement du dossier lie sur la machine hote
 
+# definition d'un network appele 'inception' et de type 'bridge'
 networks:
   inception:
-    name: inception
-    #driver: bridge
+    driver: bridge
