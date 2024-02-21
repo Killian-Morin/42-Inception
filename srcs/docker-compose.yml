@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3"
 
 services:
   mariadb:
@@ -10,7 +10,7 @@ services:
       dockerfile: Dockerfile        # Nom du Dockerfile
     env_file: .env
     volumes:
-      - mariadbV:/var/lib/mysql # le volume mariadbV est mounted sur le chemin /var/lib/mysql pour la DB
+      - mariadb_vol:/var/lib/mysql # le volume mariadb_vol est mounted sur le chemin /var/lib/mysql pour la DB
     # restart:
     # expose:
     #   - "3306"
@@ -28,7 +28,7 @@ services:
       dockerfile: Dockerfile
     env_file: .env
     volumes:
-      - wordpressV:/var/www/wordpress # le volume wordpressV est mounted sur le chemin /var/www/wordpress pour NGINX
+      - wordpress_vol:/var/www/wordpress # le volume wordpress_vol est mounted sur le chemin /var/www/wordpress pour NGINX
     # restart:
 
   wordpress:
@@ -42,26 +42,26 @@ services:
       dockerfile: Dockerfile
     env_file: .env
     volumes:
-      - wordpressV:/var/www/wordpress # le volume wordpressV est mounted sur le chemin /var/www/wordpress pour NGINX
+      - wordpress_vol:/var/www/wordpress # le volume wordpress_vol est mounted sur le chemin /var/www/wordpress pour NGINX
     # restart:
     # expose:
     #   - "9000"
 
 volumes:
-  mariadbV:
-    name: mariadbV
+  mariadb_vol:
+    name: mariadb_vol
     driver: local
     driver_opts:
+      device: /Users/kmorin/data/mariadb
       type: none
       o: bind
-      device: /home/kmorin/data/mariadb # Emplacement du dossier lie sur la machine hote
-  wordpressV:
-    name: wordpressV
+  wordpress_vol:
+    name: wordpress_vol
     driver: local
     driver_opts:
+      device: /Users/kmorin/data/wordpress
       type: none
       o: bind
-      device: /home/kmorin/data/wordpress # Emplacement du dossier lie sur la machine hote
 
 # definition d'un network appele 'inception' et de type 'bridge'
 networks:

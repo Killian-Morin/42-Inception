@@ -7,11 +7,11 @@ RUN apt update -y && \
 # Installation des utilitaires et de wget
 RUN apt install -y vim && \
 	apt install -y curl && \
-	apt install -y wget
+	apt-get install -y wget
 
 # Installation de php et de php-fpm pour la gestion des requêtes .php
 # Installation de mysql et de mariadb-client pour la gestion des requêtes .sql
-RUN apt install -y php8.0 php8.0-fpm php8.0-mysql mariadb-client
+RUN apt-get install -y php7.3 php-fpm php-mysql mariadb-client
 
 # wget https://fr.wordpress.org/wordpress-6.4.3-fr_FR.tar.gz -P /var/www
 # cd /var/www && tar -xvf wordpress-6.4.3-fr_FR.tar.gz && rm wordpress-6.4.3-fr_FR.tar.gz
@@ -25,10 +25,11 @@ RUN chown -R www-data:www-data /var/www
 RUN chmod -R 755 /var/www
 
 # Copie du fichier de config de php et du script de lancement
-COPY conf/www.conf /etc/php/8.0/fpm/pool.d/www.conf
-COPY tools/script.sh .
-RUN chmod +x script.sh
+COPY conf/www.conf /etc/php/7.3/fpm/pool.d/www.conf
+# renommer le script vers start_wp.sh ?
+COPY tools/script.sh /usr/local/script.sh
+RUN chmod +x /usr/local/script.sh
 
 EXPOSE 9000
 
-ENTRYPOINT ["sh", "/etc/php/8.0/fpm/pool.d/www.conf"]
+ENTRYPOINT ["sh", "/usr/local/script.sh"]

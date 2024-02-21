@@ -27,7 +27,7 @@ RUN chown -R www-data:www-data /var/www/wordpress
 
 # Copie du fichier de config et du script de lancement
 COPY conf/nginx.conf /etc/nginx/nginx.conf
-# renommer le script vers start_ngx.sh
+# renommer le script vers start_ngx.sh ?
 COPY tools/script.sh /usr/local/script.sh
 RUN chmod +x /usr/local/script.sh
 
