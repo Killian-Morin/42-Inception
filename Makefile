@@ -6,7 +6,7 @@ build:
 	docker-compose -f srcs/docker-compose.yml -p ${NAME} build
 
 up:
-	docker-compose -f srcs/docker-compose.yml -p ${NAME} up -d
+	docker-compose -f srcs/docker-compose.yml -p ${NAME} up
 
 start:
 	docker-compose -f srcs/docker-compose.yml -p ${NAME} start
@@ -26,5 +26,6 @@ clear:
 
 clean: down
 	docker system prune -a
+	docker volume rm mariadb_vol wordpress_vol
 
-.PHONY: all clean
+.PHONY: all build up start stop down clear clean

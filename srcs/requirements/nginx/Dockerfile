@@ -7,7 +7,7 @@ RUN apt update -y && \
 # Installation des utilitaires et de nginx
 RUN apt install -y vim && \
 	apt install -y curl && \
-	apt install -y nginx
+	apt-get install -y nginx
 
 # Installation de ssl
 RUN mkdir -p /etc/nginx/ssl && \
@@ -28,10 +28,10 @@ RUN chown -R www-data:www-data /var/www/wordpress
 # Copie du fichier de config et du script de lancement
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 # renommer le script vers start_ngx.sh ?
-COPY tools/script.sh /usr/local/script.sh
-RUN chmod +x /usr/local/script.sh
+COPY tools/start_ngx.sh /usr/local/start_ngx.sh
+RUN chmod +x /usr/local/start_ngx.sh
 
 # Port requis pour SSL (https)
 EXPOSE 443
 
-ENTRYPOINT [ "sh", "/usr/local/script.sh" ]
+ENTRYPOINT [ "sh", "/usr/local/start_ngx.sh" ]
