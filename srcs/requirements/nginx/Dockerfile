@@ -1,7 +1,7 @@
 FROM debian:bullseye
 
 # maj de l'installateur
-RUN apt update -y && \
+RUN apt-get update -y && \
 	apt upgrade -y
 
 # Installation des utilitaires et de nginx

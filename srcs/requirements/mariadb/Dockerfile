@@ -24,4 +24,4 @@ RUN chmod +x /usr/local/start_mdb.sh
 
 EXPOSE 3306
 
-CMD ["sh", "/usr/local/start_mdb.sh"]
+ENTRYPOINT [ "sh", "/usr/local/start_mdb.sh" ]

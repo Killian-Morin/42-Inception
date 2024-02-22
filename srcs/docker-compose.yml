@@ -11,7 +11,7 @@ services:
     env_file: .env
     volumes:
       - mariadb_vol:/var/lib/mysql # le volume mariadb_vol est mounted sur le chemin /var/lib/mysql pour la DB
-    # restart:
+    restart: unless-stopped
     # expose:
     #   - "3306"
 
@@ -29,7 +29,7 @@ services:
     env_file: .env
     volumes:
       - wordpress_vol:/var/www/wordpress # le volume wordpress_vol est mounted sur le chemin /var/www/wordpress pour NGINX
-    # restart:
+    restart: on-failure
 
   wordpress:
     container_name: wordpress
@@ -43,7 +43,7 @@ services:
     env_file: .env
     volumes:
       - wordpress_vol:/var/www/wordpress # le volume wordpress_vol est mounted sur le chemin /var/www/wordpress pour NGINX
-    # restart:
+    restart: on-failure
     # expose:
     #   - "9000"
 

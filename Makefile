@@ -1,8 +1,20 @@
 NAME = inception
 
+RESET = \033[0m
+BLUE = \033[0;34m
+GREEN = \033[0;92m
+CYAN = \033[0;96m
+MAGENTA = \033[0;95m
+
 all: build up
 
 build:
+	if [ ! -d /Users/kmorin/data/wordpress ]; then \
+		mkdir -p /Users/kmorin/data/wordpress; \
+	fi
+	if [ ! -d /Users/kmorin/data/mariadb ]; then \
+		mkdir -p /Users/kmorin/data/mariadb; \
+	fi
 	docker-compose -f srcs/docker-compose.yml -p ${NAME} build
 
 up:
@@ -26,6 +38,25 @@ clear:
 
 clean: down
 	docker system prune -a
+	rm -rf /Users/kmorin/data/mariadb
+	rm -rf /Users/kmorin/data/wordpress
 	docker volume rm mariadb_vol wordpress_vol
 
-.PHONY: all build up start stop down clear clean
+status:
+	@echo "${BLUE}Status:"
+	@docker ps -a
+	@echo "${RESET}"
+
+	@echo "${GREEN}Images:"
+	@docker image ls -a
+	@echo "${RESET}"
+
+	@echo "${CYAN}Containers:"
+	@docker container ls -a
+	@echo "${RESET}"
+
+	@echo "${MAGENTA}Volumes:"
+	@docker volume ls
+	@echo "${RESET}"
+
+.PHONY: all build up start stop down clear clean status
