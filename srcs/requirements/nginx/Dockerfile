@@ -29,11 +29,10 @@ RUN chown -R www-data:www-data /var/www/wordpress
 
 # Copie du fichier de config et du script de lancement
 COPY conf/nginx.conf /etc/nginx/nginx.conf
-# renommer le script vers start_ngx.sh ?
-COPY tools/start_ngx.sh /usr/local/start_ngx.sh
-RUN chmod +x /usr/local/start_ngx.sh
+COPY tools/script_nginx.sh /usr/local/script_nginx.sh
+RUN chmod +x /usr/local/script_nginx.sh
 
 # Port requis pour SSL (https)
 EXPOSE 443
 
-ENTRYPOINT [ "sh", "/usr/local/start_ngx.sh" ]
+ENTRYPOINT [ "sh", "/usr/local/script_nginx.sh" ]

@@ -29,9 +29,9 @@ RUN chmod -R 755 /var/www
 # Copie du fichier de config de php et du script de lancement
 COPY conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
 # renommer le script vers start_wp.sh ?
-COPY tools/start_wp.sh /usr/local/start_wp.sh
-RUN chmod +x /usr/local/start_wp.sh
+COPY tools/script_wordpress.sh /usr/local/script_wordpress.sh
+RUN chmod +x /usr/local/script_wordpress.sh
 
 EXPOSE 9000
 
-ENTRYPOINT [ "sh", "/usr/local/start_wp.sh" ]
+ENTRYPOINT [ "sh", "/usr/local/script_wordpress.sh" ]

@@ -1,22 +1,16 @@
 echo "<============> MariaDB SCRIPT <============>"
 
-# start mysql
-# service mysql start;
-
 # initialize the user and data directory for mariadb/mysql
-	# the data directory will store the DB
 	# the user is the user that will do the request on the DB
+	# the data directory will store the DB
 mysqld --initialize --user=mysql --datadir=/var/lib/mysql;
-
-# chown -R mysql:mysql /var/lib/mysql;
-# chown -R mysql:mysql /run/mysqld;
 
 mysqld --user=mysql --datadir=/var/lib/mysql &
 
 pid=$!
 
 # to wait for the launch of MariaDB
-sleep 10
+sleep 20
 
 # change the priviligies of the root
 mysql -u root -p${MARIADB_ROOT_PASS} -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MARIADB_ROOT_PASS}';"
@@ -33,19 +27,14 @@ mysql -u root -p${MARIADB_ROOT_PASS} -e "GRANT ALL PRIVILEGES ON *.* TO '${MARIA
 # flush so that MARIADB takes the changes into account
 mysql -u root -p${MARIADB_ROOT_PASS} -e "FLUSH PRIVILEGES;"
 
-# shutdown the db with the user root, thus also passing the his password
-# mysqladmin -u root -p${MARIADB_ROOT_PASS} shutdown
-
 #echo "------------------\n"
 #mysql -u root -p${MARIADB_ROOT_PASS} -e "SHOW DATABASES;"
 #echo "------------------\n"
 #mysql -u root -p${MARIADB_ROOT_PASS} -e "SELECT User FROM mysql.user"
 #echo "------------------\n"
 
-# To kill mysqld
+# kill mysqld
 kill "$pid"
 
 # restart the db with the now effective changes
-#exec mysqld_safe
-
 exec mysqld --user=mysql --datadir=/var/lib/mysql
