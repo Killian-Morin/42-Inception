@@ -4,10 +4,12 @@ FROM debian:bullseye
 RUN apt-get update -y && \
 	apt upgrade -y
 
-# Installation des utilitaires et de nginx
-RUN apt install -y vim && \
-	apt install -y curl && \
-	apt-get install -y nginx
+# Installation des utilitaires
+# RUN apt install -y vim && \
+#	apt install -y curl
+
+# Installation de nginx
+RUN apt-get install -y nginx
 
 # Installation de ssl
 RUN mkdir -p /etc/nginx/ssl && \

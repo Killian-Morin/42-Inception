@@ -1,4 +1,4 @@
-version: "3"
+version: "3.3"
 
 services:
   mariadb:
@@ -12,8 +12,6 @@ services:
     volumes:
       - mariadb_vol:/var/lib/mysql # le volume mariadb_vol est mounted sur le chemin /var/lib/mysql pour la DB
     restart: unless-stopped
-    # expose:
-    #   - "3306"
 
   nginx:
     container_name: nginx
@@ -44,22 +42,20 @@ services:
     volumes:
       - wordpress_vol:/var/www/wordpress # le volume wordpress_vol est mounted sur le chemin /var/www/wordpress pour NGINX
     restart: on-failure
-    # expose:
-    #   - "9000"
 
 volumes:
   mariadb_vol:
     name: mariadb_vol
     driver: local
     driver_opts:
-      device: /Users/kmorin/data/mariadb
+      device: /home/kmorin/data/mariadb
       type: none
       o: bind
   wordpress_vol:
     name: wordpress_vol
     driver: local
     driver_opts:
-      device: /Users/kmorin/data/wordpress
+      device: /home/kmorin/data/wordpress
       type: none
       o: bind
 

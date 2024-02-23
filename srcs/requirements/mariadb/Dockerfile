@@ -4,11 +4,13 @@ FROM debian:bullseye
 RUN apt update -y && \
 	apt upgrade -y
 
-# Installation des utilitaires et de mariadb
-RUN apt install vim -y && \
-	apt install curl -y && \
-	apt-get install mariadb-server procps -y
-	# apt install mariadb-server mariadb-client -y
+# Installation des utilitaires
+#RUN apt install vim -y && \
+#	apt install curl -y
+
+# Installation de mariadb
+RUN apt-get install mariadb-server procps -y
+	# alternative: apt install mariadb-server mariadb-client -y
 
 # Creation des directories nécessaires au bon fonctionnement de MariaDB
 	# /run/mysqld/ pour le directory de travail | /var/lib/mysql pour le data directory

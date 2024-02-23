@@ -9,11 +9,11 @@ MAGENTA = \033[0;95m
 all: build up
 
 build:
-	if [ ! -d /Users/kmorin/data/wordpress ]; then \
-		mkdir -p /Users/kmorin/data/wordpress; \
+	if [ ! -d /home/kmorin/data/wordpress ]; then \
+		mkdir -p /home/kmorin/data/wordpress; \
 	fi
-	if [ ! -d /Users/kmorin/data/mariadb ]; then \
-		mkdir -p /Users/kmorin/data/mariadb; \
+	if [ ! -d /home/kmorin/data/mariadb ]; then \
+		mkdir -p /home/kmorin/data/mariadb; \
 	fi
 	docker-compose -f srcs/docker-compose.yml -p ${NAME} build
 
@@ -38,9 +38,9 @@ clear:
 
 clean: down
 	docker system prune -a
-	rm -rf /Users/kmorin/data/mariadb
-	rm -rf /Users/kmorin/data/wordpress
-	docker volume rm mariadb_vol wordpress_vol
+	-if [ "$$(docker volume ls -q)" ]; then docker volume rm $$(docker volume ls -q); fi
+	rm -rf /home/kmorin/data/mariadb
+	rm -rf /home/kmorin/data/wordpress
 
 status:
 	@echo "${BLUE}Status:"

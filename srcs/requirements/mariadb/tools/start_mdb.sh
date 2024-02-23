@@ -36,11 +36,11 @@ mysql -u root -p${MARIADB_ROOT_PASS} -e "FLUSH PRIVILEGES;"
 # shutdown the db with the user root, thus also passing the his password
 # mysqladmin -u root -p${MARIADB_ROOT_PASS} shutdown
 
-echo "------------------\n"
-mysql -u root -p${MARIADB_ROOT_PASS} -e "SHOW DATABASES;"
-echo "------------------\n"
-mysql -u root -p${MARIADB_ROOT_PASS} -e "SELECT User FROM mysql.user"
-echo "------------------\n"
+#echo "------------------\n"
+#mysql -u root -p${MARIADB_ROOT_PASS} -e "SHOW DATABASES;"
+#echo "------------------\n"
+#mysql -u root -p${MARIADB_ROOT_PASS} -e "SELECT User FROM mysql.user"
+#echo "------------------\n"
 
 # To kill mysqld
 kill "$pid"

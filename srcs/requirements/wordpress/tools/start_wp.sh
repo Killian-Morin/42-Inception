@@ -1,6 +1,6 @@
 echo "<============> WordPress SCRIPT <============>"
 
-php-fpm7.3 -v
+php-fpm7.4 -v
 
 # Boucle verification mariadb qui attend que mariadb soit up
 while ! mariadb -u $MARIADB_USER --password=$MARIADB_PASS -h mariadb -P 3306 --silent; do
@@ -37,4 +37,4 @@ else
 fi
 
 # Lancement de php-fpm
-php-fpm7.3 -F
+php-fpm7.4 -F
