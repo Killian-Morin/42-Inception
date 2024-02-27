@@ -1,65 +1,66 @@
 version: "3.3"
 
 services:
-  mariadb:
+  mariadb: # MariaDB Container
     container_name: mariadb
-    networks:
+    networks: # the network it is part of
       - inception
     build:
-      context: requirements/mariadb # Localisation du Dockerfile
-      dockerfile: Dockerfile        # Nom du Dockerfile
+      context: requirements/mariadb # Location of the Dockerfile
+      dockerfile: Dockerfile        # Name of the Dockerfile
     env_file: .env
     volumes:
-      - mariadb_vol:/var/lib/mysql # le volume mariadb_vol est mounted sur le chemin /var/lib/mysql pour la DB
+      - mariadb_vol:/var/lib/mysql # the volume mariadb_vol is mounted to /var/lib/mysql in the container
     restart: unless-stopped
-
-  nginx:
-    container_name: nginx
-    networks:
-      - inception
-    ports: # ouverture du port vers l'exterieur du network
-      - "443:443" # rend accessible le container depuis l'exterieur HOST_PORT:CONTAINER_PORT
-    depends_on:
-      - wordpress
-    build:
-      context: requirements/nginx
-      dockerfile: Dockerfile
-    env_file: .env
-    volumes:
-      - wordpress_vol:/var/www/wordpress # le volume wordpress_vol est mounted sur le chemin /var/www/wordpress pour NGINX
-    restart: on-failure
 
   wordpress:
     container_name: wordpress
     networks:
       - inception
-    depends_on:
+    depends_on: # indicate that the MariaDB container will be build before this one
       - mariadb
     build:
       context: requirements/wordpress
       dockerfile: Dockerfile
     env_file: .env
     volumes:
-      - wordpress_vol:/var/www/wordpress # le volume wordpress_vol est mounted sur le chemin /var/www/wordpress pour NGINX
+      - wordpress_vol:/var/www/wordpress # the volume wordpress_vol is mounted to /var/www/wordpress in the container
+    restart: on-failure
+
+  nginx: # NGINX Container
+    container_name: nginx
+    networks:
+      - inception
+    ports: # ouverture du port vers l'exterieur du network
+      - "443:443" # rend accessible le container depuis l'exterieur HOST_PORT:CONTAINER_PORT
+    depends_on: # indicate that the WordPress container will be build before this one
+      - wordpress
+    build:
+      context: requirements/nginx
+      dockerfile: Dockerfile
+    env_file: .env
+    volumes:
+      - wordpress_vol:/var/www/wordpress # the volume wordpress_vol is mounted to /var/www/wordpress in the container
     restart: on-failure
 
 volumes:
-  mariadb_vol:
+  mariadb_vol: # the volume for MariaDB
     name: mariadb_vol
-    driver: local
+    driver: local # the volume is stored locally
     driver_opts:
-      device: /home/kmorin/data/mariadb
-      type: none
-      o: bind
-  wordpress_vol:
+      device: ${MARIADB_VOL} # the volume is mounted to a folder, depends if on the VM or not
+      type: none # no specific type
+      o: bind # options, set it to bind, make it a volume that is mount to a folder on the host
+  wordpress_vol: # the volume for WordPress
     name: wordpress_vol
     driver: local
     driver_opts:
-      device: /home/kmorin/data/wordpress
+      device: ${WORDPRESS_VOL} # the volume is mounted to a folder, depends if on the VM or not
       type: none
       o: bind
 
-# definition d'un network appele 'inception' et de type 'bridge'
+# creation of a network named 'inception' of type 'bridge'
+# a network of type 'bridge' allow communications between containers and the host but not with the outside
 networks:
   inception:
     driver: bridge
