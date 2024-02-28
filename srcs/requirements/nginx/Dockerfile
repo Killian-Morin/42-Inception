@@ -1,38 +1,44 @@
 FROM debian:bullseye
 
-# maj de l'installateur
+# Update and Upgrade of the packet manager
 RUN apt-get update -y && \
 	apt upgrade -y
 
-# Installation des utilitaires
+# Download of utilitaries
 # RUN apt install -y vim && \
 #	apt install -y curl
 
-# Installation de nginx
+# Download of nginx
 RUN apt-get install -y nginx
 
-# Installation de ssl
+# Creation of a directory that will hold future SSL information and Download of ssl
 RUN mkdir -p /etc/nginx/ssl && \
 	apt install -y openssl
 
-# Configuration du certificat auto signé
+# Creation of the self signed certificate using openssl
+	# req -> request for a certificate signature or to create a self signed certificate
+	# -x509 -> indicate that we want a self signed certificate
+	# -nodes -> if a private key is created, it will not be encrypted
+	# -out -> file to write the ouput, i.e. the certificate
+	# -keyout -> file to write the key that is created
+	# -subj -> set information concerning the certificate (origin, for who ...)
 RUN openssl req -x509 -nodes -out /etc/nginx/ssl/inception.crt -keyout /etc/nginx/ssl/inception.key -subj "/C=CH/ST=VD/L=Lausanne/O=42/OU=42/CN=${DOMAIN_NAME}/emailAddress=${WP_ADMIN_EMAIL}"
 
-# Création des directories nécessaires au bon fonctionnement de NGINX et modification des droits pour que nginx puisse les manipuler
+# Creation of the folders necessary for NGINX and modification of the permissions of a folder so that the user managing NGINX can manipulate them
 RUN mkdir -p /var/run/nginx && \
 	mkdir -p /var/www/wordpress && \
 	chmod -R 755 /var/www/wordpress
 
-# Modification récursive du propriétaire des fichiers et sous-dossiers de /var/www/wordpress
-# L'user 'www-data' est l'user par défaut pour la gestion de NGINX et correspond à celui choisi dans conf/nginx.conf
+# Recursive modification of the owner of the files and sub-folders of /var/www/wordpress
+# The user 'www-data' is the user that will manage NGINX, it's the one by default but he is explicitly chosen in the config file
 RUN chown -R www-data:www-data /var/www/wordpress
 
-# Copie du fichier de config et du script de lancement
+# Copy of the config file and the script launch at the start of the container
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 COPY tools/script_nginx.sh /usr/local/script_nginx.sh
 RUN chmod +x /usr/local/script_nginx.sh
 
-# Port requis pour SSL (https)
+# Required port for SSL (http)
 EXPOSE 443
 
 ENTRYPOINT [ "sh", "/usr/local/script_nginx.sh" ]

@@ -1,6 +1,4 @@
 NAME = inception
-MARIADB_VOL = 0
-WORDPRESS_VOL = 0
 
 RESET = \033[0m
 BLUE = \033[0;34m
@@ -8,33 +6,17 @@ GREEN = \033[0;92m
 CYAN = \033[0;96m
 MAGENTA = \033[0;95m
 
+# Get the bash environnement variable HOME
+HOME := $(shell echo $$HOME)
+
+# Use the HOME path to sets the paths of the volumes
+export MARIADB_VOL := ${HOME}/data/mariadb
+export WORDPRESS_VOL := ${HOME}/data/wordpress
+
 all: build up
 
+# Create the directories for the volumes
 build:
-# create the folders for the volumes is they do not exist yet (remember to change the login)
-# on the VM (the path is given in the subject)
-	# if [ ! -d /home/login/data/wordpress ]; then \
-	# 	mkdir -p /home/login/data/wordpress; \
-	# fi
-	# if [ ! -d /home/login/data/mariadb ]; then \
-	# 	mkdir -p /home/login/data/mariadb; \
-	# fi
-# on the "normal" host
-	# if [ ! -d /Users/login/data/wordpress ]; then \
-	# 	mkdir -p /Users/login/data/wordpress; \
-	# fi
-	# if [ ! -d /Users/login/data/mariadb ]; then \
-	# 	mkdir -p /Users/login/data/mariadb; \
-	# fi
-
-	@if [ -d /Users ]; then \ # check if on macos or Debian and set the volumes path variables accordingly
-		MARIADB_VOL = /Users/login/data/mariadb; \ # paths that you can choose
-		WORDPRESS_VOL = /Users/login/data/wordpress; \
-	else \ # no /Users folder so on Debian, so on the VM (for me), so use the paths given in the subject
-		MARIADB_VOL = /home/login/data/mariadb; \
-		WORDPRESS_VOL = /home/login/data/wordpress; \
-	fi
-
 	mkdir -p ${MARIADB_VOL};
 	mkdir -p ${WORDPRESS_VOL};
 
@@ -62,14 +44,8 @@ clear:
 clean: down
 	docker system prune -a
 	-if [ "$$(docker volume ls -q)" ]; then docker volume rm $$(docker volume ls -q); fi
-
-# remove the folders used for the volumes (remember to change the login)
-# on the VM
-	# rm -rf /home/login/data/mariadb
-	# rm -rf /home/login/data/wordpress
-# on the "normal" host
-	# rm -rf /Users/login/data/mariadb
-	# rm -rf /Users/login/data/wordpress
+	rm -rf ${MARIADB_VOL}
+	rm -rf ${WORDPRESS_VOL}
 
 status:
 	@echo "${BLUE}Status:"
