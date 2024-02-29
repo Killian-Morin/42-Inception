@@ -1,17 +1,28 @@
 NAME = inception
 
+# The only thing to change if you want to use this project (normally)
+LOGIN = kmorin
+
 RESET = \033[0m
 BLUE = \033[0;34m
 GREEN = \033[0;92m
 CYAN = \033[0;96m
 MAGENTA = \033[0;95m
 
-# Get the bash environnement variable HOME
-HOME := $(shell echo $$HOME)
+# Determine the OS under which we are running
+# Set the home directory accodingly (/Users/login if on MacOS, /home/login if on Linux)
+# Set the domaine name accordingly
+ifeq ($(shell uname),Darwin)
+	HOME = /Users/$(LOGIN)
+	export STUDENT_DOMAIN = localhost
+else
+	HOME = /home/$(LOGIN)
+	export STUDENT_DOMAIN = $(LOGIN).42.ch
+endif
 
 # Use the HOME path to sets the paths of the volumes
-export MARIADB_VOL := ${HOME}/data/mariadb
-export WORDPRESS_VOL := ${HOME}/data/wordpress
+export WORDPRESS_VOL := $(HOME)/data/wordpress
+export MARIADB_VOL := $(HOME)/data/mariadb
 
 all: build up
 

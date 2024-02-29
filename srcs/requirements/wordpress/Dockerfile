@@ -1,37 +1,34 @@
 FROM debian:bullseye
 
-# maj de l'installateur
+# Update and Upgrade of the packet manager
 RUN apt update -y && \
 	apt upgrade -y
 
-# Installation des utilitaires
+# Download of utilitaries
 # RUN apt install -y vim && \
 	# apt install -y curl
 
-# Installation de wget
+# Download of wget
 RUN apt-get install -y wget
 
-# Installation de php et de php-fpm pour la gestion des requêtes .php
-# Installation de mysql et de mariadb-client pour la gestion des requêtes .sql
+# Download of php and php-fpm for the management of .php requests
+# Download of php7.4-mysql and mariadb-client for the management of .sql requests
 RUN apt-get -y install php7.4 php7.4-fpm php7.4-mysql mariadb-client
 
-# wget https://fr.wordpress.org/wordpress-6.4.3-fr_FR.tar.gz -P /var/www
-# cd /var/www && tar -xvf wordpress-6.4.3-fr_FR.tar.gz && rm wordpress-6.4.3-fr_FR.tar.gz
-
-# Création du directory pour wordpress et du directory de travail pour php
+# Creation of the directory for WordPress and of the working directory for php
 RUN mkdir -p /var/www/wordpress
 RUN mkdir -p /run/php
 
-# Modification récursive du propriétaire des fichiers et sous-dossiers de /var/www et des permissions
+# Recursive modification of the owner and group of the files and sub-folders of /var/www and change of its permissions
 RUN chown -R www-data:www-data /var/www
 RUN chmod -R 755 /var/www
 
-# Copie du fichier de config de php et du script de lancement
+# Copy of the config file, the script launched at the start of the container and change his permission for it to be executed by anyone
 COPY conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
-# renommer le script vers start_wp.sh ?
 COPY tools/script_wordpress.sh /usr/local/script_wordpress.sh
 RUN chmod +x /usr/local/script_wordpress.sh
 
+# Port used to communicate with NGINX
 EXPOSE 9000
 
 ENTRYPOINT [ "sh", "/usr/local/script_wordpress.sh" ]

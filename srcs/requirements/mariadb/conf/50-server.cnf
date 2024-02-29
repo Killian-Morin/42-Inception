@@ -7,7 +7,9 @@
 #
 # * Settings for Inception
 #
+# Explicitly assign the port to 3306, which is the default port
 port = 3306
+# All IP addresses of the network are accepted
 bind-address            = 0.0.0.0
 
 #
@@ -44,6 +46,7 @@ collation-server      = utf8mb4_general_ci
 # If you use the same .cnf file for MySQL and MariaDB,
 # you can put MariaDB-only options here
 [mariadb]
+lower_case_table_names=2
 
 # This group is only read by MariaDB-10.3 servers.
 # If you use the same .cnf file for MariaDB of different versions,
