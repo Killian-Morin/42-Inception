@@ -4,7 +4,7 @@
 <!-- PROJECT SUMMARY -->
 <div align="center">
 
-<h3 align="center">Philosophers</h3>
+<h3 align="center">Inception</h3>
 
   <p align="center">
     Summary:
